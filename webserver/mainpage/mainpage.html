@@ -1,0 +1,45 @@
+<h1>Welcome to Inventory Management System</h1>
+<h2>User: {{.User}}</h2>
+
+<div id = "itemCategory" >
+<h2>Item categories</h2>
+<ul>
+{{range .Categories }}
+    <li>{{.Name}}</li>
+{{end}}
+</ul>
+</div>
+
+{{if .ItemsInStock }}
+<br/>
+<h2>Items in stock:</h2>
+{{with .ItemsInStock}}
+<div id = "itemInStock">
+    <table id = "itemTable">
+        <thead>
+            <th>Id</th>
+            <th>Name</th>
+            <th>Price</th>
+            <th>Description</th>
+            <th>Category</th>
+        </thead>
+    {{range .}}
+        <tr>
+            <td>{{.UniqueID}}</td>
+            <td>{{.Name}}</td>
+            <td>{{.Price}}</td>
+            <td>{{.Description}}</td>
+            <td>{{.Category.Name}}</td>
+        </tr>
+    {{end}}
+    </table>
+</div>
+{{end}}
+
+{{end}}
+<!-- <ul>
+    <li>Books</li>
+    <li>Shoes</li>
+    <li>Medicines</li>
+    <li>Clothes</li>
+</ul> -->
