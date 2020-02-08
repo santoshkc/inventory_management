@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/santoshkc89/inventory_management/webserver/inventory"
 	"github.com/santoshkc89/inventory_management/webserver/login"
 	"github.com/santoshkc89/inventory_management/webserver/mainpage"
 )
@@ -27,6 +28,8 @@ func (server *Server) Run() {
 	http.HandleFunc("/loginValidate", login.LoginValidateHandler)
 
 	http.HandleFunc("/mainPage", mainpage.MainPageHandler)
+
+	http.HandleFunc("/inventory", inventory.InventoryHandler)
 
 	addr := fmt.Sprintf("%s:%d", server.Address, server.Port)
 

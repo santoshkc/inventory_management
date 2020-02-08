@@ -1,0 +1,19 @@
+<h2>Inventory Details</h2>
+<h3>Month: {{.Month}}</h3>
+<ul>
+{{range $itemId,$itemDetails := .Items }}
+<li>{{$itemId}}</li>
+<ul>
+
+<table>
+    {{range $itemDetails}}
+    <tr>
+        <td>{{.BatchID}}</td>
+        <td>{{.StockedLocation}}</td>
+        <td>{{.ItemCount}}</td>
+    </tr>
+    {{end}}
+</table>
+</ul>
+{{end}}
+</ul>
