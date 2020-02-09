@@ -1,0 +1,8 @@
+<h2>Available Items</h2>
+{{with $items := .}}
+<ul>
+    {{range $index,$item := $items}}
+        <li><a href = "/items/{{$item.UniqueID}}">{{$item.Name}}</a></li>
+    {{end}}
+</ul>
+{{end}}

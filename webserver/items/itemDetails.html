@@ -1,0 +1,8 @@
+<h2>Item Details<h2>
+<form id = "itemDetails" method= "POST" action = "/items/{{.UniqueID}}">
+    <input type = "hidden" id = "uniqueID" name = "uniqueID" value = "{{.UniqueID}}"/>
+    <label>Name: </label><input type = "text" name = "name" value = "{{.Name}}" /> <br/>
+    <label>Category: </label><input type = "text" name = "category" value = "{{.Category}}" /> <br/>
+    <label>Description: </label>
+    <textarea type = "text" col = "80" row = "30" name = "desc">{{.Description}}</textarea>
+</form>

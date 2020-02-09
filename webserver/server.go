@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"github.com/santoshkc89/inventory_management/webserver/inventory"
+	"github.com/santoshkc89/inventory_management/webserver/items"
 	"github.com/santoshkc89/inventory_management/webserver/login"
 	"github.com/santoshkc89/inventory_management/webserver/mainpage"
 )
@@ -31,6 +32,8 @@ func (server *Server) Run() {
 
 	http.HandleFunc("/inventory", inventory.InventoryHandler)
 	http.HandleFunc("/inventoryHistory", inventory.InventoryHistoryHandler)
+
+	http.HandleFunc("/items/", items.ItemsHandler)
 
 	addr := fmt.Sprintf("%s:%d", server.Address, server.Port)
 
