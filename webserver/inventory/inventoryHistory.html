@@ -1,0 +1,29 @@
+<h2>Inventory History</h2>
+{{with $checkOuts := .CheckOuts}}
+    <ul>
+        {{range $index,$checkOut := $checkOuts}}
+            <li>{{$checkOut.Client}}<br/>
+                <table id = "details" >
+                    <thead>
+                        <th>ItemName</th>
+                        <th>BatchId</th>
+                        <th>Item Count</th>
+                        <th>From</th>
+                        <th>To</th>
+                        <th>Checkedout Date</th>
+                    </thead>
+                    {{range $checkOut.CheckoutDetails}}
+                    <tr>
+                        <td>{{.ItemName}}</td>
+                        <td>{{.BatchID}}</td>
+                        <td>{{.ItemCheckedoutCount}}</td>
+                        <td>{{.CheckedOutFrom}}</td>
+                        <td>{{.CheckedOutTo}}</td>
+                        <td>{{.CheckedoutDate}}</td>
+                    </tr>
+                    {{end}}
+                </table>
+            </li>
+        {{end}}
+    </ul>
+{{end}}

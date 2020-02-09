@@ -30,6 +30,7 @@ func (server *Server) Run() {
 	http.HandleFunc("/mainPage", mainpage.MainPageHandler)
 
 	http.HandleFunc("/inventory", inventory.InventoryHandler)
+	http.HandleFunc("/inventoryHistory", inventory.InventoryHistoryHandler)
 
 	addr := fmt.Sprintf("%s:%d", server.Address, server.Port)
 

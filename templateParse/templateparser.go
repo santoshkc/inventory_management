@@ -31,6 +31,21 @@ func RenderTemplate(w http.ResponseWriter, template string, data interface{}) er
 	return TemplateLoader.render(w, template, data)
 }
 
+// RenderTemplateFromFile renders template using go template file
+func RenderTemplateFromFile(w http.ResponseWriter, templatePath string, templateName string, data interface{}) error {
+	tmpl, err := template.New("test1").ParseFiles(templatePath)
+	if err != nil {
+		return err
+	}
+
+	w.Header().Set("Content-Type", "text/html; charset = utf-8")
+	err = tmpl.ExecuteTemplate(w, templateName, data)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 //var globalTemplates *template.Template = template.Must(FindAndParseTemplates("./webserver", nil))
 
 func findAndParseTemplates(rootDir string, funcMap template.FuncMap) (*template.Template, error) {
