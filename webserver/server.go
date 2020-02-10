@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"time"
 
 	"github.com/gorilla/mux"
 	"github.com/santoshkc89/inventory_management/webserver/inventory"
@@ -16,6 +17,20 @@ import (
 type Server struct {
 	Address string
 	Port    int32
+}
+
+type Middleware func(http.HandlerFunc) http.HandlerFunc
+
+func loggingMiddleware() Middleware {
+	return func(f http.HandlerFunc) http.HandlerFunc {
+		return func(w http.ResponseWriter, r *http.Request) {
+			start := time.Now()
+			defer func() {
+				log.Println(r.URL.Path, time.Since(start))
+			}()
+			f(w, r)
+		}
+	}
 }
 
 // Run start web server
@@ -33,28 +48,30 @@ func (server *Server) Run() {
 		http.Redirect(w, r, "/login", http.StatusFound)
 	}).Methods(http.MethodGet)
 
+	logging := loggingMiddleware()
+
 	loginRouter := router.PathPrefix("/login").Subrouter()
-	loginRouter.HandleFunc("/", login.LoginHandler).Methods(http.MethodGet)
+	loginRouter.HandleFunc("/", logging(login.LoginHandler)).Methods(http.MethodGet)
 
-	router.HandleFunc("/loginValidate", login.LoginValidateHandler).Methods(http.MethodPost)
+	router.HandleFunc("/loginValidate", logging(login.LoginValidateHandler)).Methods(http.MethodPost)
 	loginValidateRouter := router.PathPrefix("/loginValidate/").Subrouter()
-	loginValidateRouter.HandleFunc("/", login.LoginValidateHandler).Methods(http.MethodPost)
+	loginValidateRouter.HandleFunc("/", logging(login.LoginValidateHandler)).Methods(http.MethodPost)
 
-	router.HandleFunc("/mainPage", mainpage.MainPageHandler).Methods(http.MethodGet)
+	router.HandleFunc("/mainPage", logging(mainpage.MainPageHandler)).Methods(http.MethodGet)
 	mainPageRouter := router.PathPrefix("/mainPage/").Subrouter()
-	mainPageRouter.HandleFunc("/", mainpage.MainPageHandler).Methods(http.MethodGet)
+	mainPageRouter.HandleFunc("/", logging(mainpage.MainPageHandler)).Methods(http.MethodGet)
 
-	router.HandleFunc("/inventory", inventory.InventoryHandler).Methods(http.MethodGet)
+	router.HandleFunc("/inventory", logging(inventory.InventoryHandler)).Methods(http.MethodGet)
 	inventoryRouter := router.PathPrefix("/inventory").Subrouter()
-	inventoryRouter.HandleFunc("/", inventory.InventoryHandler).Methods(http.MethodGet)
+	inventoryRouter.HandleFunc("/", logging(inventory.InventoryHandler)).Methods(http.MethodGet)
 
 	router.HandleFunc("/inventoryHistory", inventory.InventoryHistoryHandler).Methods(http.MethodGet)
 	inventoryHistory := router.PathPrefix("/inventoryHistory").Subrouter()
-	inventoryHistory.HandleFunc("/", inventory.InventoryHistoryHandler).Methods(http.MethodGet)
+	inventoryHistory.HandleFunc("/", logging(inventory.InventoryHistoryHandler)).Methods(http.MethodGet)
 
-	router.HandleFunc("/items", items.ItemsHandler).Methods(http.MethodGet)
+	router.HandleFunc("/items", logging(items.ItemsHandler)).Methods(http.MethodGet)
 	itemsRouter := router.PathPrefix("/items").Subrouter()
-	itemsRouter.HandleFunc("/", items.ItemsHandler).Methods(http.MethodGet)
+	itemsRouter.HandleFunc("/", logging(items.ItemsHandler)).Methods(http.MethodGet)
 	itemsRouter.HandleFunc("/{uniqueId}", func(w http.ResponseWriter, r *http.Request) {
 		vars := mux.Vars(r)
 		uniqueID := vars["uniqueId"]
