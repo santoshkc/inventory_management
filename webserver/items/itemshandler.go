@@ -158,33 +158,32 @@ var pathRegex *regexp.Regexp = regexp.MustCompile("^(/items)(/)?([A-Za-z0-9]+)?$
 // ItemsHandler item request handler
 func ItemsHandler(w http.ResponseWriter, r *http.Request) {
 
-	path := r.URL.Path
+	repo := CreateItemRepository()
+	items := repo.GetAllItems()
 
-	m := pathRegex.FindAllStringSubmatch(path, -1)
+	err := templateparse.RenderTemplateFromFile(w, "./webserver/items/items.html",
+		"items.html", items)
 
-	uniqueId := m[0][3]
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 
-	if len(uniqueId) < 1 {
-		repo := CreateItemRepository()
-		items := repo.GetAllItems()
+}
 
-		err := templateparse.RenderTemplateFromFile(w, "./webserver/items/items.html", "items.html", items)
+// ItemDetailsHandler item request handler
+func ItemDetailsHandler(w http.ResponseWriter, r *http.Request, uniqueID string) {
 
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-	} else {
-		repo := CreateItemRepository()
-		item, _ := repo.GetItem(uniqueId)
+	repo := CreateItemRepository()
+	item, _ := repo.GetItem(uniqueID)
 
-		err := templateparse.RenderTemplateFromFile(w, "./webserver/items/itemDetails.html", "itemDetails.html",
-			item)
+	err := templateparse.RenderTemplateFromFile(w, "./webserver/items/itemDetails.html",
+		"itemDetails.html",
+		item)
 
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
 	}
 
 }
